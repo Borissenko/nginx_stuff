@@ -1,0 +1,55 @@
+CHAPTER 3, лек 4- добавляем аутоидентификацию с помощью утилиты от Аппачи
+
+#источник- бесплатный курс:
+https://www.linkedin.com/learning/learning-nginx/create-a-vm-with-vagrant
+enter by linkedin.com
+016@rambler.ru
+548655618
+
+
+# apt-get install -y apache2-utils
+
+# Create a password for securing locations
+    htpasswd -b -c /etc/nginx/passwords admin 90
+    -c  //создаем файл
+    /etc/nginx/passwords  //где создаем файл с юзерами-паспортами
+    admin   //имя юзера
+    90      //паспорт юзера
+
+    htpasswd -b /etc/nginx/passwords user2 92
+    #при добавлении второго юзера-паспорта не пишем -c, иначе перетрем предыдущие записи
+    #эта же команда, что бы параписать паспорт у существующего юзера
+
+    htpasswd -D /etc/nginx/passwords user2
+    #удаление юзера-паспорта
+
+    chown www-data /etc/nginx/passwords
+    #www-data- это user account
+    #it can only be read by the user account that NGINX uses, www-data, and of course, the root user.
+
+    chmod 600 /etc/nginx/passwords
+    #изменили права доступа к паспотр-файлу на 600, вместо 777
+
+# Add
+        location /appointments/ {
+            # only allow IPs from the same network the server is on
+            allow 192.168.0.0/24;
+            allow 10.0.0.0/8;
+            deny all;
+
+            auth_basic "Authentication is required...";
+            auth_basic_user_file /etc/nginx/passwords;
+
+            #что бы обрабатывались php-файлы по пути /appointments/
+            location ~ \.php$ {
+                include snippets/fastcgi-php.conf;
+                fastcgi_pass unix:/var/run/php/php7.2-fpm.sock;
+                fastcgi_intercept_errors on;
+            }
+        }
+
+Я создал ЮЗЕРА для учебного сайта с животными:
+admin
+паспорт - 90,
+user2
+паспорт - 92

@@ -19,6 +19,7 @@
     
 # см. также в proxy.md    
 
+
 # Компрессия в архив файлов, посылаемых сервером клиенту.
 В head запросa клиента заявлено, что броузер способен раскрывать архивы
 Accept-Encoding: gzip, deflate
@@ -35,13 +36,21 @@ http {
   gzip_comp_level 3;
 
   gzip_types text/css;  //какие типы файлов мы будем сжимать
-  gzip_types text/javascript;
+  gzip_types text/plain text/css application/json application/x-javascript text/xml
+              application/xml application/xml+rss text/javascript;
 
+
+    # gzip_vary on;
+	# gzip_proxied any;
+	
+	# gzip_buffers 16 8k;
+	# gzip_http_version 1.1;
+	
   server {
   }
 }
 
-Проверяем
+Проверяем эфективность сжатия
 >curl http://127.0.0.1/main.css > style.css
 получаем несжатый файл
 >curl -H "Accept-Encoding: gzip, deflate" http://127.0.0.1/main.css > style.min.css
