@@ -1,0 +1,50 @@
+# proxy
+
+    location /through {
+      #этот хедер добавляется только в запрос от клиента к серверу
+      proxy_set_header proxied nginx
+
+      #этот хедер добавляется только в ответ от сервера клиенту
+      add_header proxied nginx
+
+      proxy_pass 'http://basic.ru/';
+      #черта в конце адреса- важна,
+      #без нее перевод будет не на http://basic.ru, a на адрес http://basic.ru/through
+    }
+
+# balancer
+http://nginx.org/en/docs/http/load_balancing.html
+https://docs.nginx.com/nginx/admin-guide/load-balancer/http-load-balancer/
+http://nginx.org/en/docs/http/ngx_http_upstream_module.html
+
+  http {
+      upstream myapp1 {
+          ip_hash;
+          #если прописать "ip_hash;", то запросы будут идти только к первому серверу (server srv1.example.com;),
+          #а ести тот упадет, то начнут идти только ко второму серверу
+          #это полезно, когда мы используем сессии
+
+          #без "ip_hash;" каждый последующий запрос идет к последующему серверу
+
+          list_conn;
+          #если первый сервер занят отдачей длительного запроса,
+          #то запросы от других пользователей будут идти к другим серверам
+
+          server srv1.example.com;
+          server srv2.example.com;
+          server srv3.example.com;
+      }
+
+      server {
+          listen 80;
+
+          location / {
+              proxy_pass http://myapp1;
+          }
+      }
+  }
+
+
+
+
+
