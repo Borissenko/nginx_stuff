@@ -10,9 +10,11 @@
 >systemctl status php7.2-fpm
 
 2. пример nginx.conf см в папке etc,nginx/PHP.conf.
+
   user www-data;
   #это пишем в самом верху nginx.conf
   #www-data - это "юзер" php-fpm'a
+  #имя юзера уточняем by >ps aux | grep nginx
 
   server {
     listen 80;
