@@ -1,0 +1,57 @@
+    =location=
+
+1.
+    location / {
+      return 200 "Hello";
+    }
+    location / {
+      try_files $uri $uri/ =404;
+    }
+    location / {
+      root   /usr/share/nginx/html;
+      index  index.html;            //он по-умолчанию
+      index  index.html index.htm;
+    }
+
+2. Доминирование URL:
+     =   >>
+     ^~  >>
+     ~*  >>
+     not_prefix
+
+a) Путь НАЧИНАЕТСЯ с /greet, а далее мб что угодно (!), в тч /greet33/vv
+    # return имеет 2 аргумента- код ответа и строку, которую мы увидим в броузере
+    location = /greet {
+      return 200 'Hello';
+    }
+
+b) Exact match, будет срабатывать только по точно указанному пути
+    location = /greet {
+      return 200 'Hello from NGINX "/greet" location - EXACT MATCH.';
+    }
+
+c)  Preferential Prefix - как обычный URL, но доминирует над RE-путем
+    location ^~ /greet2 {
+     return 200 'Hello from NGINX "/greet" location.';
+    }
+
+d)  в роли URL - RE
+    location ~ /greet[0-9] {
+      return 200 'Hello from NGINX "/greet" location - REGEX MATCH.';
+    }
+
+e)  в роли URL - RE, причем регистр у greet может уже быль любым
+    location ~* /greet[0-9] {
+      return 200 'Hello from NGINX "/greet" location - REGEX MATCH INSENSITIVE.';
+    }
+
+f)  в роли URL - RE по типу файла
+    location ~\.php$ {
+      # Pass php requests to the php-fpm service (fastcgi)
+      include fastcgi.conf;
+      fastcgi_pass unix:/run/php/php7.2-fpm.sock;
+    }
+
+
+
+

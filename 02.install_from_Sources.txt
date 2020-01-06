@@ -1,0 +1,59 @@
+Устанавливать nginx можно:
+1. by npm
+2. by Building nginx from Sources, скачав ресурс с nginx.org
+
+=Building nginx from Sources=
+
+1.скачиваем через команду терминала
+wget http://nginx.org/download/nginx-1.16.1.tar.gz
+ls -l        //проверяем, скачалось ли
+tar -zxvf    //распаковываем
+ls -l        //проверяем, распоковалось ли
+cd nginx-1.13.10
+
+2.но файла-скрипта конфигурации ./configare здесь нет, ставим
+apt-get install build-essential
+но в нем опять чего-то не хватает, это указано внизу списка, после "error", когда открываем
+./configare
+Нр: нехватает PCRE-library
+, ставим это через npm:
+apt-get install libpcre3 libpcre3-dev zlib1g zlib1g-dev libssl-dev
+
+3.конфигурируем configare-скрипт
+./configare --help  //или см. http://nginx.org/en/docs/configure.html
+./configare --sbin-path=/user/bin/nginx
+--conf-path=/atc/nginx/nginx.conf
+--error-log-path=/var/log/nginx/error.log
+--http-log-path=/var/log/nginx/access.log
+--with-pcre
+--pid-path=/var/run/nginx.pid
+--with-http_ssl_module
+
+ это были bundled-модули (см http://nginx.org/en/docs/, Modules reference), а можно еще поставить third party modules
+ ngx_http_v2_module
+
+ >make  //собираем составленную нами конфигурацию
+ >make install
+
+4.запускаем сервер
+>nginx
+>ps aux | grep nginx   //проверяем запущенность nginx
+
+5.запускаем в броузере
+167.99.93.26
+
+6.делаем configuring a system service,
+т.е. устанавливаем systemd by созданием скрипта nginx.service
+
+  https://www.freedesktop.org/wiki/Software/systemd/
+  https://www.nginx.com/resources/wiki/start/topics/examples/initscripts/
+
+  скрипт описан на стр
+  https://www.nginx.com/resources/wiki/start/topics/examples/systemd/
+  создаем данный файл, чуть правим пути в нем и кладем его в
+  /lib/systemd/system/nginx.service
+
+  .... не понятно, зачем оно.
+
+
+

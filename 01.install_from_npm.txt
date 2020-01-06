@@ -1,0 +1,41 @@
+А) Установка nginx to Ubunta по официальному дистрибьюту
+https://nginx.org/ru/linux_packages.html#Ubunt
+
+sudo apt install nginx
+
+nginx после установки запускается автоматически
+в броузере откраваем для просмотра приветственной страницы
+localhost
+127.0.0.1
+
+или хосты узнаем by
+>apt install net-tools
+>ifconfig
+
+
+Б) Удаление nginx
+Выполните следующую серию команд:
+Получим ответ, что nginx удалён:
+sudo apt remove nginx
+
+Получим ответ, что nginx удалён с указанием оставшихся пакетов:
+sudo apt purge nginx
+
+Удаление пакетов установленных автоматически с nginx, но более неиспользуемые:
+sudo apt autoremove
+
+
+В) Переустановка
+#удаляем nginx и все связанные пакеты
+sudo apt-get remove nginx*
+
+#удаляем рабочие директории и логи
+sudo rm -rf /etc/nginx/ /usr/sbin/nginx /usr/share/man/man1/nginx.1.gz
+
+#удаляем остатки nginx из базы apt
+sudo apt-get --purge autoremove nginx && sudo dpkg --purge nginx
+
+#устанавливаем nginx заново с чистыми конфигами
+sudo apt-get -o DPkg::options::=--force-confmiss --reinstall install nginx
+
+Так можно переустанавливать и другие приложения.
